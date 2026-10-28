@@ -1,0 +1,217 @@
+{
+  "kind": "new_CPU_weighting_and_blending_interventions_on_retrieval_simulation",
+  "data_sha256": "c19ae76f69c7a3f23e67d2e27441830213eee941aa5658b47b1798872a61a7e9",
+  "train_rows": 355926,
+  "test_rows": 43864,
+  "train_groups": 4000,
+  "represented_test_groups": 500,
+  "expected_Q0_groups_from_dataset_description": 500,
+  "train_test_group_overlap": 0,
+  "features": 31,
+  "summary": [
+    {
+      "regime": 0,
+      "method": "M4_query_balanced",
+      "rr25": 0.7967269476722109,
+      "top1": 0.7,
+      "recall25": 0.984
+    },
+    {
+      "regime": 0,
+      "method": "M5_positive5",
+      "rr25": 0.8103513431013432,
+      "top1": 0.712,
+      "recall25": 0.98
+    },
+    {
+      "regime": 0,
+      "method": "M6_half_blend",
+      "rr25": 0.8179622782446312,
+      "top1": 0.72,
+      "recall25": 0.98
+    },
+    {
+      "regime": 0,
+      "method": "baseline",
+      "rr25": 0.7912174603174603,
+      "top1": 0.7,
+      "recall25": 0.976
+    },
+    {
+      "regime": 1,
+      "method": "M4_query_balanced",
+      "rr25": 0.6262766436462088,
+      "top1": 0.48,
+      "recall25": 0.944
+    },
+    {
+      "regime": 1,
+      "method": "M5_positive5",
+      "rr25": 0.6350424233566945,
+      "top1": 0.496,
+      "recall25": 0.948
+    },
+    {
+      "regime": 1,
+      "method": "M6_half_blend",
+      "rr25": 0.6430769085816145,
+      "top1": 0.512,
+      "recall25": 0.944
+    },
+    {
+      "regime": 1,
+      "method": "baseline",
+      "rr25": 0.6456122668465379,
+      "top1": 0.516,
+      "recall25": 0.94
+    }
+  ],
+  "contrasts": [
+    {
+      "regime": 0,
+      "method": "M4_query_balanced",
+      "n_groups": 250,
+      "n_molecules": 250,
+      "delta_mrr25": 0.005509487354750518,
+      "ci95_molecule": [
+        -0.02062250543024227,
+        0.03277104541657173
+      ],
+      "positive_groups": 33,
+      "negative_groups": 27
+    },
+    {
+      "regime": 0,
+      "method": "M5_positive5",
+      "n_groups": 250,
+      "n_molecules": 250,
+      "delta_mrr25": 0.019133882783882786,
+      "ci95_molecule": [
+        0.0001610714285714289,
+        0.038960086996337
+      ],
+      "positive_groups": 33,
+      "negative_groups": 16
+    },
+    {
+      "regime": 0,
+      "method": "M6_half_blend",
+      "n_groups": 250,
+      "n_molecules": 250,
+      "delta_mrr25": 0.026744817927170872,
+      "ci95_molecule": [
+        0.006043783846872085,
+        0.047824414098972895
+      ],
+      "positive_groups": 33,
+      "negative_groups": 16
+    },
+    {
+      "regime": 1,
+      "method": "M4_query_balanced",
+      "n_groups": 250,
+      "n_molecules": 250,
+      "delta_mrr25": -0.019335623200329083,
+      "ci95_molecule": [
+        -0.04030845935110642,
+        0.0013269196046210004
+      ],
+      "positive_groups": 40,
+      "negative_groups": 48
+    },
+    {
+      "regime": 1,
+      "method": "M5_positive5",
+      "n_groups": 250,
+      "n_molecules": 250,
+      "delta_mrr25": -0.01056984348984349,
+      "ci95_molecule": [
+        -0.02789900519997195,
+        0.0074310488505526795
+      ],
+      "positive_groups": 29,
+      "negative_groups": 37
+    },
+    {
+      "regime": 1,
+      "method": "M6_half_blend",
+      "n_groups": 250,
+      "n_molecules": 250,
+      "delta_mrr25": -0.002535358264923479,
+      "ci95_molecule": [
+        -0.018314442927774125,
+        0.014089898213891812
+      ],
+      "positive_groups": 31,
+      "negative_groups": 35
+    },
+    {
+      "regime": "all",
+      "method": "M4_query_balanced",
+      "n_groups": 500,
+      "n_molecules": 250,
+      "delta_mrr25": -0.006913067922789287,
+      "ci95_molecule": [
+        -0.02640900008857298,
+        0.01127846180701748
+      ],
+      "positive_groups": 73,
+      "negative_groups": 75
+    },
+    {
+      "regime": "all",
+      "method": "M5_positive5",
+      "n_groups": 500,
+      "n_molecules": 250,
+      "delta_mrr25": 0.004282019647019648,
+      "ci95_molecule": [
+        -0.008887522265032496,
+        0.018359662276236116
+      ],
+      "positive_groups": 62,
+      "negative_groups": 53
+    },
+    {
+      "regime": "all",
+      "method": "M6_half_blend",
+      "n_groups": 500,
+      "n_molecules": 250,
+      "delta_mrr25": 0.012104729831123696,
+      "ci95_molecule": [
+        -0.0014954935397793426,
+        0.02557360269469093
+      ],
+      "positive_groups": 64,
+      "negative_groups": 51
+    }
+  ],
+  "fit_seconds": {
+    "baseline": 14.235332151999955,
+    "M4_query_balanced": 14.096095714000057,
+    "M5_positive5": 14.668916709999849
+  },
+  "sklearn": "1.8.0",
+  "limits": [
+    "Derived features of observed public spectra, with simulated library-removal regimes; not an official CASMI score.",
+    "Q0 Enveda examples reserved; Q1-6 training.",
+    "Group IDs disjoint; exact chemical identity overlap across public libraries cannot be independently ruled out without raw structure metadata.",
+    "Only represented queries can be scored; missing groups are disclosed.",
+    "No test selection, no Kaggle submission."
+  ],
+  "generated_utc": "2026-10-28T09:35:02.733563+00:00",
+  "model_exports": {
+    "baseline": {
+      "sha256": "1288e98acc536ca30ed062e675dec1ae364833ada4a76eac23891388a0cd08de",
+      "prediction_roundtrip_exact": true
+    },
+    "M4_query_balanced": {
+      "sha256": "88c5e817dee270b40fb8b6090e3b93d77aceb1bfeae471cc9ee26d714b88fe4f",
+      "prediction_roundtrip_exact": true
+    },
+    "M5_positive5": {
+      "sha256": "3d39a4192200d05148cf0802ff20c4d1a819b3f1704e2d4366bc95afc8e8f80d",
+      "prediction_roundtrip_exact": true
+    }
+  },
+  "feature_contract": "First 31 columns of the specified sim_rank_rows_nofp.npz X array, in original order; not interchangeable with MetFrag or notebook features."
+}

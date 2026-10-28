@@ -47,3 +47,8 @@ Decisions by JEV (provenance=jev) stored in D:/PROJECTS/.cognition/enveda-casmi-
 - Conclusion: REJECTED (fewer spectra lose most of the fusion gain). Keep 6 spectra; protect runtime with a
   90-min budget and per-molecule partial application (JEV confidence 0.16 on the budget question; tie broken
   by evidence: molecules are independent, so partial application is the same rule on a subset).
+
+## M4–M6 — transferable weighting hypotheses on the legacy sim-ranker features
+Three fixed CPU interventions, seed20261028, trainQ1–6/testQ0, group IDs disjoint,31 original features. M4 inverse query-size weights;M5 positive-row weight5;M6 fixed50/50 probabilities. Script src/experimental_weighting.py; models exported and loaded back with exact prediction agreement, ~14s/fit on servidor-ia, one CPU thread. src/weighting_predict.py applies the fixed blend to the explicit feature contract.
+Positive library-removal result: M6 MRR .791217→.817962, delta .026745 CI[.006044,.047824]. True-structure-removal regime delta-.002535 CI[-.018314,.014090]. Overall delta+.012105 CI[-.001495,.025574],64 improved/51 worsened groups. Exploratory intervals unadjusted; exact chemical overlap across libraries unresolved. Both regimes retained; no automatic insertion into current MetFrag notebook because feature contracts differ. No new Kaggle submission from this change.
+API read-only28Oct: C00 ref57729674 remains PENDING,no score; upstream public0.472 is not yet our reproduced official score. Best completed own returned score .348.
