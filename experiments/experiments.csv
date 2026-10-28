@@ -1,0 +1,5 @@
+id,date,hypothesis,configuration,commit,metric,decision
+E00,2026-10-28,public labelled panel predicts board order of rerank variants,panel 120 mol; V1 vs C472 vs V4; bootstrap 2000,panel_rerank.py,panel MRR V1 0.9176 C472 0.9128 V4 0.9118 (board V1 0.466 C472 0.472 V4 0.470),rejected - panel anti-predicts board
+C00,2026-10-28,control: public 0.472 recipe reproduces on our account,"fork alexchilton 0.472 unchanged, T4",kernel enveda-casmi-c00-control-public-0472 v1,pending (sub 57729674),control
+E01,2026-10-28,MetFrag FragmenterScore is a useful independent voter on ranks 2-25,"MetFrag 2.6.11 depth 2, 10 ppm/0.003 Da, 6 spectra/mol, rule D",kernel enveda-casmi-e01-metfrag-panel v2,"standalone MetFrag 0.554 (neural 0.441, random 0.153); D w0.25 +0.0017 CI[+0.0001,+0.0040]; w0.75 +0.0038 CI[-0.0018,+0.0105]",partially accepted - exploratory board submission C01 (w0.25)
+E01b,2026-10-28,1-3 spectra per molecule keep the E01 gain,rule D w0.25 with 1/2/3/6 spectra,e01b_spectra_budget.py,gain +0.0010/+0.0003/+0.0010/+0.0017,"rejected - keep 6 spectra, partial application under 90-min budget"

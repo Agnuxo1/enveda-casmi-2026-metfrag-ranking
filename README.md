@@ -1,0 +1,149 @@
+# Spectra → Structures: MetFrag-assisted ranking for Enveda CASMI 2026
+
+**Predicting the 2D structure of natural products from LC-MS/MS spectra, ranked by evidence.**
+Our entry to the [Enveda CASMI 2026 Kaggle competition](https://www.kaggle.com/competitions/enveda-CASMI26-molecule-id-mass-spectra)
+(MRR@25, 4,200+ teams, US$50,000).
+
+![Pipeline](figures/pipeline_flow.gif)
+
+| | |
+|---|---|
+| **Task** | For each unknown molecule (1–9 timsTOF MS/MS spectra), return up to 25 candidate SMILES, best first |
+| **Metric** | Mean reciprocal rank @25 on the InChIKey connectivity block after RDKit 2026.03.3 tautomer canonicalisation |
+| **Base** | The strongest public pipeline (0.465 → 0.472), credited below, run unchanged as our **control** |
+| **Our contribution** | An independent, physics-based voter: **MetFrag 2.6.11 in-silico fragmentation** re-orders ranks 2–25 |
+| **Method** | Pre-registered hypotheses, a fixed control, paired bootstrap and molecule-disjoint folds; negatives logged |
+| **Author** | Francisco Angulo de Lafuente ([@Agnuxo1](https://github.com/Agnuxo1) · Kaggle `franciscoangulo`) |
+
+---
+
+## Highlights
+
+- **MetFrag carries strong, independent evidence.** On the public labelled panel, ordering each molecule's final
+  25 candidates by MetFrag alone puts the correct structure at a mean reciprocal rank of **0.554** — better than
+  the learned spectrum↔structure network (**0.441**) and 3.6× the random-order expectation (**0.153**).
+- **Leader-safe by construction.** The control's rank-1 answer and its candidate set are never changed; MetFrag only
+  re-orders ranks 2–25, where a wrong move costs little and a right one is worth up to 0.5 per molecule.
+- **Positive, statistically supported gain on the panel.** At weight 0.25 the deployable rule improves the control by
+  **+0.0017 MRR, 95% CI [+0.0001, +0.0040]**; larger weights reach +0.0038 with wider intervals.
+- **Production-grade, internet-off.** The unmodified MetFrag jar runs on Kaggle's built-in OpenJDK 21, inside the
+  9-hour notebook budget, with per-molecule partial application and automatic fall-back to the control.
+- **From 0.348 to the 0.47 band in one day.** Re-basing on the best public pipeline moved our entry from rank
+  ~2,340 into the leading plateau; the MetFrag layer is our bet to climb out of it.
+
+![Leaderboard journey](figures/leaderboard_journey.gif)
+
+## How it works
+
+### 1 · Candidate generation and the 0.465 fusion (public, unchanged)
+Three engines propose structures within 10 ppm of the neutral mass: a library/analogue engine over 0.71 M stored
+structures (training set + COCONUT), a second engine over ChEBI, LIPID MAPS and PubChemLite, and a PubChem channel
+that screens 105.9 M structures with fingerprint models and a documentation prior. Identity-aware fusion merges them
+and the GLACIER/ICEBERG forward models re-order same-formula candidates.
+
+### 2 · Leader-safe neural reciprocal-rank fusion (public, unchanged)
+A spectrum↔structure network re-ranks the list with reciprocal-rank fusion. Rank 1 uses neural weight 0.25; ranks
+2–25 use 0.75 — the public 0.472 recipe.
+
+![Leader-safe RRF](figures/rrf_leader_safe.gif)
+
+### 3 · MetFrag voter on ranks 2–25 (this work)
+[MetFrag](https://github.com/ipb-halle/MetFragRelaunched) (Ruttkies *et al.*, 2016) breaks every candidate's
+molecular graph *in silico* (up to two bond cleavages), and scores how much of the measured MS/MS intensity its
+fragments explain. For each molecule we run it on up to six spectra, normalise per spectrum and average, then fuse:
+
+$$s_i = \frac{1}{3 + \mathrm{pos}_i^{\text{control}}} + \frac{w}{3 + \mathrm{rank}_i^{\text{MetFrag}}},\qquad i \in \text{ranks } 2\text{–}25,\quad w = 0.25$$
+
+![MetFrag evidence](figures/metfrag_evidence.gif)
+
+*Green peaks: fragments explained by the correct structure, which the pipeline had placed second; orange: decoys.*
+
+## Results
+
+### Offline: does MetFrag help? (experiment E01, public labelled panel, 118 molecules)
+
+![E01 results](figures/e01_metfrag_results.gif)
+
+| Rule (rank 1 fixed) | MRR | Δ vs control | 95% CI (paired bootstrap, 4,000) | Folds (3, molecule-disjoint) |
+|---|---|---|---|---|
+| Control (0.472 recipe) | 0.9128 | — | — | — |
+| + MetFrag, w = 0.25 (**submitted**) | 0.9146 | **+0.0017** | [+0.0001, +0.0040] | +0.0005 / +0.0047 / 0.0000 |
+| + MetFrag, w = 0.50 | 0.9142 | +0.0014 | [−0.0028, +0.0054] | +0.0018 / +0.0065 / −0.0042 |
+| + MetFrag, w = 0.75 | 0.9166 | +0.0038 | [−0.0018, +0.0105] | +0.0053 / +0.0101 / −0.0042 |
+
+The panel is drawn from library molecules, so the control already ranks ~88% of them first; only about 15 molecules
+can move at all. On the hidden natural-product test the control's MRR is ~0.47, so far more answers sit in ranks
+2–25, which is exactly where the voter acts.
+
+### Kaggle submissions (cycle 2, 28 Oct 2026)
+
+| ID | Description | Public LB | Private LB |
+|---|---|---|---|
+| C00 | Control: credited public 0.472 recipe, unchanged | *scoring* | after 14 Dec |
+| C01 | Control + MetFrag voter (w = 0.25) | *scoring* | after 14 Dec |
+
+The full experiment log, including negative results, is in [experiments/LOG.md](experiments/LOG.md) and
+[experiments/experiments.csv](experiments/experiments.csv).
+
+## Reproduce
+
+```bash
+pip install -r requirements.txt
+# 1) offline panel experiment (needs the public dataset sanpier/catalogue-experiment-saner)
+kaggle datasets download sanpier/catalogue-experiment-saner -p data/catalogue --unzip
+python src/e00_panel_proxy_check.py                       # E00: is the panel a valid proxy?
+python src/e01_eval.py path/to/e01_metfrag_scores.parquet  # E01: fusion rules + bootstrap
+python src/test_metfrag_stage.py                          # unit test of the deployable stage
+# 2) MetFrag scores themselves are produced on Kaggle CPU (Java 21 is pre-installed):
+#    src/e01_metfrag_panel.py is the exact kernel script
+```
+
+The submission notebook is public on Kaggle:
+[`franciscoangulo/enveda-casmi-c01-metfrag-voter`](https://www.kaggle.com/code/franciscoangulo/enveda-casmi-c01-metfrag-voter)
+— the 0.472 control plus [`src/metfrag_stage.py`](src/metfrag_stage.py) as Stage 4. The MetFrag jar is mirrored,
+unmodified, as the Kaggle dataset `franciscoangulo/metfrag-commandline-2611` for internet-off runs.
+
+No competition data is stored in this repository (the data licence is CC BY-NC 4.0 and forbids redistribution).
+
+## Repository layout
+
+```
+src/metfrag_stage.py        deployable Stage 4 (MetFrag voter, budget guard, partial application, validation)
+src/e01_metfrag_panel.py    Kaggle kernel: MetFrag on the labelled panel
+src/e01_eval.py             fusion rules, paired bootstrap, molecule-disjoint folds
+src/e01b_spectra_budget.py  how many spectra per molecule are needed
+src/e00_panel_proxy_check.py checks whether the panel predicts the leaderboard
+src/test_metfrag_stage.py   unit test with a mocked MetFrag
+tools/make_gifs.py          all animated figures
+experiments/                LOG.md, experiments.csv, JSON results
+```
+
+## Credits
+
+This entry stands on public work by many Kaggle authors; all pipeline credit is theirs.
+
+| Contribution | Authors |
+|---|---|
+| 0.472 leader-safe recipe (w_mid 0.75) | [Alex Chilton](https://www.kaggle.com/code/alexchilton/casmi26-lb-0-472-leader-safe-ranks-2-25-at-0-75) |
+| *From Peaks to Structures* consensus layer (0.468) | [Roman Rozen](https://www.kaggle.com/code/romanrozen/0-468-casmi-from-peaks-to-structures) |
+| Candidate-aware PubChem promotion (0.465), spectrum↔structure model, neural fusion (0.466) | [Saner Turhaner (sanpier)](https://www.kaggle.com/code/sanpier/pubchem-neural025-lb-0-466) |
+| Attributed reproduction assets, PubChem prior, NP panel, fold-safe FPNet | [Dmitrii Gluzdov](https://www.kaggle.com/code/dmitriigluzdov/casmi-26-from-spectra-to-structures) |
+| Complete inference base (E006) | [canqiang](https://www.kaggle.com/code/canqiang/casmi26-e006-window-40-ice-fallback-true) |
+| MetFrag | C. Ruttkies, E. L. Schymanski, S. Wolf, J. Hollender, S. Neumann — *J. Cheminform.* 8:3 (2016), [doi:10.1186/s13321-016-0115-9](https://doi.org/10.1186/s13321-016-0115-9) |
+| RDKit | [rdkit.org](https://www.rdkit.org) |
+
+Competition: D. Healey *et al.*, *Enveda CASMI 2026 – Molecule ID From Mass Spectra*, Kaggle, 2026.
+
+## Limitations and notes
+
+- The only public labelled panel consists of library molecules (control MRR 0.91 vs ~0.47 on the hidden test) and
+  it mis-ranked a board-validated change in our check E00, so offline gains are treated as directional evidence.
+  Building a hidden-like replay panel (answers removed from the training library) is the main open item.
+- MetFrag costs ~16 s per spectrum on Kaggle CPU; the stage has a 90-minute budget and applies to the molecules it
+  finishes, so on a slow rerun some molecules keep the control order.
+- Using fewer spectra per molecule weakens the effect (E01b), so the stage keeps up to six.
+- Our earlier September lineage (v1–v62, best 0.348) is retired; the public plateau superseded it.
+
+## License
+
+Code: [MIT](LICENSE) (the competition's winner licence). MetFrag is LGPL-2.1 and is used as an unmodified binary.
