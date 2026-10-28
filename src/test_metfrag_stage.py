@@ -17,6 +17,7 @@ def fake_job(jar, d, sid, s):
     ids = pd.read_csv(d / 'db.csv').Identifier
     return {i: float(rng.random()) for i in ids}
 g['_job'] = fake_job; g['_metfrag_jar'] = lambda: 'fake.jar'
+g['_runtime_preflight'] = lambda jar: ('/usr/bin/java', {'status': 'compatible (test double)'})
 import shutil as sh; g['shutil'].which = lambda x: '/usr/bin/java'
 ok = g['run_metfrag_stage'](); print('ok', ok, json.dumps(g['MF_REPORT']))
 new = pd.read_csv(tmp / 'submission.csv'); old = pd.read_csv(tmp / 'submission_control_c472.csv')

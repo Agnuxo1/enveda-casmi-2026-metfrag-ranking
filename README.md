@@ -68,6 +68,18 @@ notebook completed, but a scored C01 competition receipt has not yet been
 verified. [Checked receipt](experiments/official-state-20261028.json).
 No duplicate C00 submission was made by this update.
 
+**C01 runtime repair:** the completed Kaggle output scored **zero molecules**:
+its GPU image used Java 17, while the jar's main class requires Java 21
+(class-file version 65). Its `submission.csv` remained the control, so it is
+not submitted again as an improvement. The stage now checks JVM/class
+compatibility before reading spectra, honours an explicit `METFRAG_JAVA`
+executable, rejects failed Java calls even if an old CSV exists, and applies
+only molecules whose every selected spectrum scored successfully. Zero fully
+scored molecules is reported as **unapplied**, rather than a successful change.
+Two offline regressions cover the observed Java-17 failure and Java-21
+compatibility; these are software checks, not evidence of better chemistry.
+A compatible live runtime and new measured C01 output remain necessary.
+
 ## Highlights
 
 - **MetFrag carries strong, independent evidence.** On the public labelled panel, ordering each molecule's final

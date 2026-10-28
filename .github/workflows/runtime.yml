@@ -1,0 +1,11 @@
+name: MetFrag runtime guard
+on: [push, pull_request]
+jobs:
+  observed-java-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m unittest discover -s src -p test_metfrag_runtime.py
+      - run: python -m py_compile src/metfrag_stage.py
