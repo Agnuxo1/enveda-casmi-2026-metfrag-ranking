@@ -1,0 +1,14 @@
+{
+  "observed_date_utc": "2026-10-28",
+  "source": "authenticated official Kaggle competition_submissions API",
+  "competition": "enveda-CASMI26-molecule-id-mass-spectra",
+  "submission_ref": "57729674",
+  "submitted_utc": "2026-10-28 07:49:22.250000",
+  "status": "SubmissionStatus.COMPLETE",
+  "public_score": 0.472,
+  "previous_best_public": 0.348,
+  "delta_public": 0.124,
+  "attribution": "C00: unchanged reproduction of the credited public 0.472 recipe; not MetFrag",
+  "c01": "notebook COMPLETE; no scored competition receipt verified at this check",
+  "not_claimed": ["private score", "final rank", "MetFrag official improvement"]
+}
