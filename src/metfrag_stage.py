@@ -3,7 +3,7 @@
 # in-silico fragments of each candidate explain the measured MS/MS peaks. Rule D (validated offline as E01):
 # the control order is one voter, MetFrag rank the other; rank 1 never changes and no candidate is added or removed.
 # Any failure, timeout or validation error keeps the control file untouched.
-import collections, glob, json, os, shutil, subprocess, time, hashlib
+import collections, glob, json, os, shutil, subprocess, time, hashlib, re, zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np, pandas as pd
 
@@ -14,6 +14,7 @@ MF_DEADLINE_H = 7.2      # never start the stage after this many hours of sessio
 MF_STOP_H = 8.6          # hard stop for MetFrag jobs (session limit is 9 h)
 MF_ROOT = ROOT / 'metfrag'; MF_ROOT.mkdir(exist_ok=True)
 MF_REPORT = {'weight': MF_WEIGHT, 'status': 'not started'}
+MF_JAVA = None
 _PROTON = 1.00727646688
 _SHIFT = {'[M+H]+': (_PROTON, 1), '[M+NH4]+': (18.03382555, 18), '[M+Na]+': (22.98922070, 23),
           '[M+K]+': (38.96315851, 39), '[M-H]-': (-_PROTON, -1), '[M+Cl]-': (34.96940126, 35),
@@ -23,6 +24,34 @@ _SHIFT = {'[M+H]+': (_PROTON, 1), '[M+NH4]+': (18.03382555, 18), '[M+Na]+': (22.
 def _metfrag_jar():
     hits = glob.glob('/kaggle/input/**/MetFragCommandLine-2.6.11.jar', recursive=True)
     return hits[0] if hits else None
+
+
+def _runtime_preflight(jar):
+    """Reject an incompatible JVM before opening spectra or launching jobs."""
+    java = os.environ.get('METFRAG_JAVA') or shutil.which('java')
+    if not java:
+        return None, {'status': 'java missing'}
+    try:
+        version = subprocess.run([java, '-version'], capture_output=True, text=True, timeout=10)
+        match = re.search(r'version\s+"(\d+)(?:\.(\d+))?', version.stderr + version.stdout)
+        if version.returncode or not match:
+            return None, {'status': 'java version unavailable'}
+        major = int(match[1]); major = int(match[2]) if major == 1 else major
+        with zipfile.ZipFile(jar) as z:
+            manifest = z.read('META-INF/MANIFEST.MF').decode('utf-8')
+            main = re.search(r'^Main-Class:\s*(\S+)', manifest, re.MULTILINE)
+            if not main:
+                return None, {'status': 'jar main class missing'}
+            with z.open(main[1].replace('.', '/') + '.class') as f:
+                header = f.read(8)
+        if header[:4] != b'\xca\xfe\xba\xbe' or len(header) != 8:
+            return None, {'status': 'invalid class header'}
+        required = int.from_bytes(header[6:8], 'big') - 44
+        info = {'status': 'compatible' if major >= required else 'incompatible Java version',
+                'java_major': major, 'required_java_major': required}
+        return (java if major >= required else None), info
+    except (OSError, subprocess.SubprocessError, zipfile.BadZipFile, KeyError, UnicodeError):
+        return None, {'status': 'runtime preflight failed'}
 
 
 def _db(smiles, path):
@@ -57,7 +86,9 @@ def _job(jar, d, sid, s):
         'MetFragScoreTypes = FragmenterScore', 'MetFragScoreWeights = 1.0', 'MetFragCandidateWriter = CSV',
         f'SampleName = {sid}', f'ResultsPath = {d}', 'MaximumTreeDepth = 2',
         'MetFragPreProcessingCandidateFilter = UnconnectedCompoundFilter', 'NumberThreads = 1']) + '\n')
-    subprocess.run(['java', '-Xmx1500m', '-jar', jar, str(par)], capture_output=True, timeout=300)
+    result = subprocess.run([MF_JAVA, '-Xmx1500m', '-jar', jar, str(par)], capture_output=True, timeout=300)
+    if result.returncode:
+        return None  # never mistake a stale CSV for a successful new call
     if not out.is_file():
         return None
     r = pd.read_csv(out)
@@ -66,6 +97,7 @@ def _job(jar, d, sid, s):
 
 
 def run_metfrag_stage():
+    global MF_JAVA
     t0 = time.time()
     control = ROOT / 'submission.csv'
     if SUBMITTED != VARIANT or not control.is_file():
@@ -73,8 +105,13 @@ def run_metfrag_stage():
     if (time.time() - NB_T0) / 3600 > MF_DEADLINE_H:
         MF_REPORT['status'] = 'skipped: session deadline'; return False
     jar = _metfrag_jar()
-    if jar is None or shutil.which('java') is None:
-        MF_REPORT['status'] = 'skipped: MetFrag jar or java missing'; return False
+    if jar is None:
+        MF_REPORT['status'] = 'skipped: MetFrag jar missing'; return False
+    MF_JAVA, runtime = _runtime_preflight(jar)
+    MF_REPORT['runtime'] = runtime
+    if MF_JAVA is None:
+        MF_REPORT['status'] = 'skipped: incompatible or unavailable runtime'
+        return False
     shutil.copyfile(control, ROOT / 'submission_control_c472.csv')
     sub = pd.read_csv(control, dtype=str, keep_default_na=False)
     spec = pd.read_parquet(COMP / 'test.parquet')
@@ -108,7 +145,12 @@ def run_metfrag_stage():
                 late = True; break
         if late:
             for fu in futs: fu.cancel()
-    complete = {m for m in scores if finished[m] == expected[m]}   # partial run: only molecules with every spectrum scored
+    complete = {m for m in scores if finished[m] == expected[m] and len(scores[m]) == expected[m]}
+    if not complete:
+        MF_REPORT.update(status='unapplied: no fully scored molecules', jobs=len(work),
+                         done=done, molecules_scored=0, rows_reordered=0,
+                         seconds=round(time.time() - t0))
+        return False  # the control file remains byte-identical
     new_rows, moved = [], 0
     for mid, smi in lists.items():
         if mid not in complete:
@@ -131,7 +173,7 @@ def run_metfrag_stage():
         assert a[0] == b[0] and sorted(a) == sorted(b) and 1 <= len(a) <= 25 and len(set(a)) == len(set(b)) and all(a)
     out.to_csv(ROOT / 'submission_metfrag.csv', index=False)
     shutil.copyfile(ROOT / 'submission_metfrag.csv', control)
-    MF_REPORT.update(status='applied (partial)' if late else 'applied', jobs=len(work), done=done, molecules_scored=len(complete), rows_reordered=moved,
+    MF_REPORT.update(status=('applied (partial)' if late else 'applied') if moved else 'scored: no rank changes', jobs=len(work), done=done, molecules_scored=len(complete), rows_reordered=moved,
                      seconds=round(time.time() - t0), sha256=hashlib.sha256(control.read_bytes()).hexdigest())
     return True
 
