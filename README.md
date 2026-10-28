@@ -78,7 +78,15 @@ only molecules whose every selected spectrum scored successfully. Zero fully
 scored molecules is reported as **unapplied**, rather than a successful change.
 Two offline regressions cover the observed Java-17 failure and Java-21
 compatibility; these are software checks, not evidence of better chemistry.
-A compatible live runtime and new measured C01 output remain necessary.
+Private Kaggle notebook version **6** now carries a pinned official
+[Temurin 21 JRE dataset](https://www.kaggle.com/datasets/franciscoangulo/temurin21-jre-linux-x64-pinned).
+The [bootstrap](src/bootstrap_java21.py) verifies the vendor archive's byte count
+and SHA-256 before extracting it into this notebook's own working directory;
+it leaves system Java unchanged. Vendor licences remain inside the unmodified
+archive. [Runtime provenance](experiments/c01-runtime-repair.json) records the
+release and hashes. Version 6 is running; successful scoring and a competition
+receipt remain to be checked. This repair leaves weight 0.25 and the six-spectrum
+rule unchanged. Preview/sample outputs do not establish a hidden-test gain.
 
 ## Highlights
 
@@ -89,8 +97,10 @@ A compatible live runtime and new measured C01 output remain necessary.
   re-orders ranks 2–25, where a wrong move costs little and a right one is worth up to 0.5 per molecule.
 - **Positive, statistically supported gain on the panel.** At weight 0.25 the deployable rule improves the control by
   **+0.0017 MRR, 95% CI [+0.0001, +0.0040]**; larger weights reach +0.0038 with wider intervals.
-- **Production-grade, internet-off.** The unmodified MetFrag jar runs on Kaggle's built-in OpenJDK 21, inside the
-  9-hour notebook budget, with per-molecule partial application and automatic fall-back to the control.
+- **Internet-off deployment candidate.** The unmodified MetFrag jar uses the pinned JRE 21 dataset;
+  the selected GPU image's built-in Java 17 is incompatible. The stage enforces
+  its 9-hour session deadline and falls back to the control on failure. A live
+  successful run of the repaired version is still required.
 - **Re-based from the historical0.348 lineage onto the credited0.472 public recipe.**
   Our C00 reproduction now has a verified public score of **0.472**; the MetFrag layer is a measured
   offline candidate for improving that control.
