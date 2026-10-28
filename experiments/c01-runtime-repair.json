@@ -1,0 +1,20 @@
+{
+  "kernel": "franciscoangulo/enveda-casmi-c01-metfrag-voter",
+  "intervention": "Deployment runtime repair only; fixed weight0.25 and6spectra unchanged",
+  "original_stage_sha256": "493eb2774cb4b898b1e90bfe8ed71c1f2dd93e8e03f04defea23b8ead6b059c1",
+  "new_stage_sha256": "bf7a8ce0f47edbff21512ec41350120aa98c516d1e6e5692f6a6a50b3f7f4511",
+  "runtime": {
+    "source": "https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=x64&heap_size=normal&image_type=jre&jvm_impl=hotspot&os=linux&vendor=eclipse",
+    "release": "jdk-21.0.13+9",
+    "name": "OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz",
+    "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz",
+    "sha256": "a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd",
+    "bytes": 52181297,
+    "licence": "GPL-2.0 with Classpath Exception; vendor legal files included in archive"
+  },
+  "all_outputs_cleared_before_upload": true,
+  "private": true,
+  "kernel_version": 6,
+  "runtime_dataset": "franciscoangulo/temurin21-jre-linux-x64-pinned",
+  "state": "preview running; not submitted to competition"
+}
