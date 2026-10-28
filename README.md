@@ -17,6 +17,56 @@ Our entry to the [Enveda CASMI 2026 Kaggle competition](https://www.kaggle.com/c
 
 ---
 
+## 28 October: experimental weighting models and checked submission state
+
+The repository now includes a reusable [CPU trainer](src/experimental_weighting.py)
+and [fixed-blend inference utility](src/weighting_predict.py), rather than only
+metric summaries. The trainer exports three estimators and verifies that loading
+each export reproduces its predictions exactly. These use the **first31 columns
+of the original sim-ranker feature matrix**, not the features of the current
+MetFrag notebook, and are not automatically inserted into that notebook.
+
+Three fixed interventions were tested on observed-spectrum features under two
+simulated retrieval regimes, training on six libraries and reserving250 Enveda
+molecules (500 query groups):
+
+| Method | Library removed MRR@25 | True-structure spectra removed MRR@25 |
+|---|---:|---:|
+| Fixed HGB control | 0.79122 | 0.64561 |
+| M4: equal total weight per query | 0.79673 | 0.62628 |
+| M5: positive candidate weight ×5 | 0.81035 | 0.63504 |
+| M6: fixed 50/50 M4/M5 probability blend | **0.81796** | 0.64308 |
+
+In the library-removed regime, the blend improves MRR by **+0.02674**, with
+95% molecule-bootstrap interval **[+0.00604,+0.04782]**. This positive result
+is retained alongside the second regime's delta -0.00254, interval
+[-0.01831,+0.01409]. These exploratory intervals are not multiplicity-adjusted.
+
+The blend improves overall mean MRR by **+0.01210**, molecule-cluster bootstrap
+95% CI [-0.00150,+0.02557];64 groups improve and51 worsen. The positive first
+regime and slightly negative second regime are both retained. These are derived
+retrieval simulations, **not official scores or a comparison with the current
+MetFrag candidate**. Exact chemical overlap across libraries cannot be ruled
+out from this numeric matrix alone. [All results](experiments/weighting/results.json)
+and [per-query outcomes](experiments/weighting/group_metrics.csv) are available.
+
+```sh
+pip install -r requirements-weighting.txt
+python src/experimental_weighting.py --data /path/to/sim_rank_rows_nofp.npz --out output --export-models
+python src/weighting_predict.py --features candidate_features.npy --models output --out scores.npy
+```
+
+The fitted estimators are also committed in
+[`models/experimental-weighting/`](models/experimental-weighting/); their hashes
+and successful export-roundtrip checks are recorded in the results JSON.
+
+**Official-state check:** Kaggle API on28October still reports C00 submission
+**57729674 as pending**, with no public score. The best completed score returned
+for our account is **0.348**;0.472 below is the credited upstream recipe's score,
+not a newly verified score for our reproduction. A C01 notebook run is not by
+itself proof of a completed competition submission; its receipt remains to be
+verified. No duplicate submission was made by this update.
+
 ## Highlights
 
 - **MetFrag carries strong, independent evidence.** On the public labelled panel, ordering each molecule's final
@@ -28,8 +78,9 @@ Our entry to the [Enveda CASMI 2026 Kaggle competition](https://www.kaggle.com/c
   **+0.0017 MRR, 95% CI [+0.0001, +0.0040]**; larger weights reach +0.0038 with wider intervals.
 - **Production-grade, internet-off.** The unmodified MetFrag jar runs on Kaggle's built-in OpenJDK 21, inside the
   9-hour notebook budget, with per-molecule partial application and automatic fall-back to the control.
-- **From 0.348 to the 0.47 band in one day.** Re-basing on the best public pipeline moved our entry from rank
-  ~2,340 into the leading plateau; the MetFrag layer is our bet to climb out of it.
+- **Re-based from the historical0.348 lineage onto the credited0.472 public recipe.**
+  Our reproduction's official score is pending; the MetFrag layer is a measured
+  offline candidate for improving that control.
 
 ![Leaderboard journey](figures/leaderboard_journey.gif)
 
@@ -67,7 +118,7 @@ $$s_i = \frac{1}{3 + \mathrm{pos}_i^{\text{control}}} + \frac{w}{3 + \mathrm{ran
 | Rule (rank 1 fixed) | MRR | Δ vs control | 95% CI (paired bootstrap, 4,000) | Folds (3, molecule-disjoint) |
 |---|---|---|---|---|
 | Control (0.472 recipe) | 0.9128 | — | — | — |
-| + MetFrag, w = 0.25 (**submitted**) | 0.9146 | **+0.0017** | [+0.0001, +0.0040] | +0.0005 / +0.0047 / 0.0000 |
+| + MetFrag, w = 0.25 (**C01 candidate**) | 0.9146 | **+0.0017** | [+0.0001, +0.0040] | +0.0005 / +0.0047 / 0.0000 |
 | + MetFrag, w = 0.50 | 0.9142 | +0.0014 | [−0.0028, +0.0054] | +0.0018 / +0.0065 / −0.0042 |
 | + MetFrag, w = 0.75 | 0.9166 | +0.0038 | [−0.0018, +0.0105] | +0.0053 / +0.0101 / −0.0042 |
 
@@ -79,8 +130,8 @@ can move at all. On the hidden natural-product test the control's MRR is ~0.47, 
 
 | ID | Description | Public LB | Private LB |
 |---|---|---|---|
-| C00 | Control: credited public 0.472 recipe, unchanged | *scoring* | after 14 Dec |
-| C01 | Control + MetFrag voter (w = 0.25) | *scoring* | after 14 Dec |
+| C00 / 57729674 | Control: credited public 0.472 recipe, unchanged | API: pending | after 14 Dec |
+| C01 | Control + MetFrag voter (w = 0.25) | receipt/score not independently verified | after 14 Dec |
 
 The full experiment log, including negative results, is in [experiments/LOG.md](experiments/LOG.md) and
 [experiments/experiments.csv](experiments/experiments.csv).
