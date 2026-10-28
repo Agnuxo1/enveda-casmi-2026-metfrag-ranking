@@ -60,12 +60,13 @@ The fitted estimators are also committed in
 [`models/experimental-weighting/`](models/experimental-weighting/); their hashes
 and successful export-roundtrip checks are recorded in the results JSON.
 
-**Official-state check:** Kaggle API on28October still reports C00 submission
-**57729674 as pending**, with no public score. The best completed score returned
-for our account is **0.348**;0.472 below is the credited upstream recipe's score,
-not a newly verified score for our reproduction. A C01 notebook run is not by
-itself proof of a completed competition submission; its receipt remains to be
-verified. No duplicate submission was made by this update.
+**Official-state update, 28 October:** the authenticated Kaggle API now reports
+C00 submission **57729674 as COMPLETE, public score 0.472**. This verifies our
+reproduction of the credited public control, improving the account's earlier
+best 0.348 by **+0.124**. It is not evidence of a MetFrag improvement: C01's
+notebook completed, but a scored C01 competition receipt has not yet been
+verified. [Checked receipt](experiments/official-state-20261028.json).
+No duplicate C00 submission was made by this update.
 
 ## Highlights
 
@@ -79,7 +80,7 @@ verified. No duplicate submission was made by this update.
 - **Production-grade, internet-off.** The unmodified MetFrag jar runs on Kaggle's built-in OpenJDK 21, inside the
   9-hour notebook budget, with per-molecule partial application and automatic fall-back to the control.
 - **Re-based from the historical0.348 lineage onto the credited0.472 public recipe.**
-  Our reproduction's official score is pending; the MetFrag layer is a measured
+  Our C00 reproduction now has a verified public score of **0.472**; the MetFrag layer is a measured
   offline candidate for improving that control.
 
 ![Leaderboard journey](figures/leaderboard_journey.gif)
@@ -130,7 +131,7 @@ can move at all. On the hidden natural-product test the control's MRR is ~0.47, 
 
 | ID | Description | Public LB | Private LB |
 |---|---|---|---|
-| C00 / 57729674 | Control: credited public 0.472 recipe, unchanged | API: pending | after 14 Dec |
+| C00 / 57729674 | Control: credited public 0.472 recipe, unchanged | **API COMPLETE: 0.472** | after 14 Dec |
 | C01 | Control + MetFrag voter (w = 0.25) | receipt/score not independently verified | after 14 Dec |
 
 The full experiment log, including negative results, is in [experiments/LOG.md](experiments/LOG.md) and
