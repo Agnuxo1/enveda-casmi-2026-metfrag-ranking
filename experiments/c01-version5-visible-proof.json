@@ -1,0 +1,24 @@
+{
+  "source": "Kaggle browser: Version5of7 selected",
+  "url": "https://www.kaggle.com/code/franciscoangulo/enveda-casmi-c01-metfrag-voter",
+  "runtime": "25m58s GPU T4x2, successful visible smoke run",
+  "scope": "12 visible library molecules; not official hidden-test score",
+  "report": {
+    "weight": 0.25,
+    "status": "applied",
+    "system_java": 17,
+    "java": "/kaggle/temp/jre21/jdk-21.0.13+9-jre/bin/java",
+    "probe": {
+      "c1": 1,
+      "c0": 1
+    },
+    "probe_seconds": 14.9,
+    "jobs": 40,
+    "done": 40,
+    "molecules_scored": 12,
+    "rows_reordered": 12,
+    "seconds": 167,
+    "sha256": "aa1bfb83711677249b942255463e085f191cf7344bf3e5ddcea73e79ec81bf67",
+    "java_failures": []
+  }
+}
