@@ -68,13 +68,13 @@ notebook completed, but a scored C01 competition receipt has not yet been
 verified. [Checked receipt](experiments/official-state-20261028.json).
 No duplicate C00 submission was made by this update.
 
-**C01 runtime history:** version4's completed Kaggle output scored **zero molecules**:
+**C01 runtime history:** version 4's completed Kaggle output scored **zero molecules**:
 its GPU image used Java 17, while the jar's main class requires Java 21
 (class-file version 65). Its `submission.csv` remained the control, so it is
-not submitted again as an improvement. **Version5 already succeeded** with its
-own Java21 fallback: **40/40 jobs,12 visible molecules scored and12 lists
-reordered**, with no Java failures and167seconds in MetFrag. The browser's
-selected Version5 output and report hash are preserved in
+not submitted again as an improvement. **Version 5 already succeeded** with its
+own Java 21 fallback: **40/40 jobs, 12 visible molecules scored and 12 lists
+reordered**, with no Java failures and 167 seconds in MetFrag. The browser's
+selected Version 5 output and report hash are preserved in
 [this positive runtime record](experiments/c01-version5-visible-proof.json).
 Those are training-library smoke cases, not a hidden-test score. They must not
 be erased by the earlier failure or by subsequent packaging work.
