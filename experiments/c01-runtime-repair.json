@@ -16,7 +16,7 @@
   "private": true,
   "kernel_version": 7,
   "runtime_dataset": "franciscoangulo/temurin21-jre-linux-x64-pinned",
-  "state": "preview running; not submitted to competition",
+  "state": "COMPLETE;40/40jobs;12molecules;12rankingschanged;integritypassed",
   "dataset_version": 2,
   "packaging_repair": "Dataset1 automatically extracted by Kaggle; v6 StopIteration. Dataset2 keeps byte-identical .tar.gz.bin, verified by official listing, and v7 verifies runtime before expensive pipeline.",
   "earlier_working_version5": {
@@ -27,5 +27,9 @@
     "rows_reordered": 12,
     "java_failures": [],
     "scope": "visible training-library smoke run; not hidden-score improvement"
-  }
+  },
+  "official_submission": 57753743,
+  "official_state": "PENDING;scoreunknown",
+  "version7_output_sha256": "aa1bfb83711677249b942255463e085f191cf7344bf3e5ddcea73e79ec81bf67",
+  "version7_matches_working_version5": true
 }
