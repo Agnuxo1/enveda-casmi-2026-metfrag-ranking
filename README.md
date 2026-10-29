@@ -78,13 +78,17 @@ only molecules whose every selected spectrum scored successfully. Zero fully
 scored molecules is reported as **unapplied**, rather than a successful change.
 Two offline regressions cover the observed Java-17 failure and Java-21
 compatibility; these are software checks, not evidence of better chemistry.
-Private Kaggle notebook version **6** now carries a pinned official
+Private Kaggle notebook version **7** now carries a pinned official
 [Temurin 21 JRE dataset](https://www.kaggle.com/datasets/franciscoangulo/temurin21-jre-linux-x64-pinned).
 The [bootstrap](src/bootstrap_java21.py) verifies the vendor archive's byte count
 and SHA-256 before extracting it into this notebook's own working directory;
 it leaves system Java unchanged. Vendor licences remain inside the unmodified
-archive. [Runtime provenance](experiments/c01-runtime-repair.json) records the
-release and hashes. Version 6 is running; successful scoring and a competition
+archive. Dataset version1 was automatically unpacked by Kaggle, so notebook6
+stopped before MetFrag with `StopIteration`. Dataset version2 preserves the
+byte-identical archive as `.tar.gz.bin`; Kaggle's file listing verifies its
+52,181,297 bytes. The bootstrap now runs before the expensive pipeline.
+[Runtime provenance](experiments/c01-runtime-repair.json) records the
+release and hashes. Version7 is running; successful scoring and a competition
 receipt remain to be checked. This repair leaves weight 0.25 and the six-spectrum
 rule unchanged. Preview/sample outputs do not establish a hidden-test gain.
 

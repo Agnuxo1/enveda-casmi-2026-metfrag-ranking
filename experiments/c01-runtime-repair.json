@@ -14,7 +14,9 @@
   },
   "all_outputs_cleared_before_upload": true,
   "private": true,
-  "kernel_version": 6,
+  "kernel_version": 7,
   "runtime_dataset": "franciscoangulo/temurin21-jre-linux-x64-pinned",
-  "state": "preview running; not submitted to competition"
+  "state": "preview running; not submitted to competition",
+  "dataset_version": 2,
+  "packaging_repair": "Dataset1 automatically extracted by Kaggle; v6 StopIteration. Dataset2 keeps byte-identical .tar.gz.bin, verified by official listing, and v7 verifies runtime before expensive pipeline."
 }
