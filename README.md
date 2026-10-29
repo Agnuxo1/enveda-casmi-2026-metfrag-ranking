@@ -96,19 +96,19 @@ stopped before MetFrag with `StopIteration`. Dataset version2 preserves the
 byte-identical archive as `.tar.gz.bin`; Kaggle's file listing verifies its
 52,181,297 bytes. The bootstrap now runs before the expensive pipeline.
 [Runtime provenance](experiments/c01-runtime-repair.json) records the
-release and hashes. **Version 7 completed successfully:** Java21 is compatible,
-40/40 jobs scored12 visible molecules and reordered12 lists in186seconds.
-Its final output SHA256 is identical to the successful version5 output.
-The [independent integrity gate](src/check_c01_output.py) verifies all400IDs,
-all400leaders and all400candidate sets against the saved control.
+release and hashes. **Version 7 completed successfully:** Java 21 is compatible,
+40/40 jobs scored 12 visible molecules and reordered 12 lists in 186 seconds.
+Its final output SHA256 is identical to the successful version 5 output.
+The [independent integrity gate](src/check_c01_output.py) verifies all 400 IDs,
+all 400 leaders and all 400 candidate sets against the saved control.
 [Checked result](experiments/c01-version7-integrity.json).
 
-**Official C01 submission57753743 was sent on29October00:47UTC**, using
-notebook version7 and `submission.csv`. An independent API readback reports
-**PENDING, no public score yet**; C00 remains COMPLETE at0.472.
+**Official C01 submission 57753743 was sent on 29 October, 00:47 UTC**, using
+notebook version 7 and `submission.csv`. An independent API readback reports
+**PENDING, no public score yet**; C00 remains COMPLETE at 0.472.
 [Submission receipt](experiments/c01-official-submission-20261029.json).
 This is the single exploratory official probe fixed by the E01 rule and
-reviewed with JEV before sending. Weight0.25 and the six-spectrum rule are
+reviewed with JEV before sending. Weight 0.25 and the six-spectrum rule are
 unchanged. Visible smoke results establish runtime and integrity, not a
 hidden-test gain; the actual competition rerun determines that score.
 
