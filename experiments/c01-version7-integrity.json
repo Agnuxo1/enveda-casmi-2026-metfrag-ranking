@@ -1,0 +1,28 @@
+{
+  "status": "integrity_passed",
+  "rows": 400,
+  "changed_rows": 12,
+  "unchanged_leaders": 400,
+  "unchanged_candidate_sets": 400,
+  "source_sha256": {
+    "metfrag_report.json": "34b8fd623021ce0f6ec5a4a009b1ceae327e47ebf1576a0b8257de8b50459629",
+    "submission_control_c472.csv": "39309f6c46d25e9c934dad8871d211ad8afebda07f4441c596714cbe7b6fd9b2",
+    "submission.csv": "aa1bfb83711677249b942255463e085f191cf7344bf3e5ddcea73e79ec81bf67"
+  },
+  "metfrag_report": {
+    "weight": 0.25,
+    "status": "applied",
+    "runtime": {
+      "status": "compatible",
+      "java_major": 21,
+      "required_java_major": 21
+    },
+    "jobs": 40,
+    "done": 40,
+    "molecules_scored": 12,
+    "rows_reordered": 12,
+    "seconds": 186,
+    "sha256": "aa1bfb83711677249b942255463e085f191cf7344bf3e5ddcea73e79ec81bf67"
+  },
+  "scope": "Visible smoke-run integrity only; not official hidden-set quality or MRR improvement"
+}

@@ -1,0 +1,30 @@
+{
+  "submitted_utc": "2026-10-29T00:47:37.957671+00:00",
+  "kernel": "franciscoangulo/enveda-casmi-c01-metfrag-voter",
+  "kernel_version": 7,
+  "scriptVersionId": 363323326,
+  "api_response": {
+    "message": "",
+    "ref": 57753743
+  },
+  "state": "Submitted; official score pending",
+  "JEV_answer": "jev1.14 submit_one_code_probe_version7 confidence.76",
+  "claim": "One preregistered exploratory code submission; no hidden-test improvement claimed",
+  "readback_checked_utc": "2026-10-29T00:47:44.966319+00:00",
+  "readback": [
+    {
+      "ref": 57753743,
+      "description": "C01 MetFrag w0.25, six spectra; pinned Java21; leaders and candidate sets preserved; visible integrity passed",
+      "status": "SubmissionStatus.PENDING",
+      "public_score": "",
+      "date": "2026-10-29 00:47:36.040000"
+    },
+    {
+      "ref": 57729674,
+      "description": "C00 control: credited fork of alexchilton public 0.472 (romanrozen 0.468 + w_mid 0.75), unchanged",
+      "status": "SubmissionStatus.COMPLETE",
+      "public_score": "0.472",
+      "date": "2026-10-28 07:49:22.250000"
+    }
+  ]
+}
