@@ -6,6 +6,8 @@
 Our entry to the [Enveda CASMI 2026 Kaggle competition](https://www.kaggle.com/competitions/enveda-CASMI26-molecule-id-mass-spectra)
 (MRR@25, 4,200+ teams, US$50,000).
 
+**Official public score 0.472, up from the account's earlier best of 0.348. The gain comes from reproducing the credited public control (C00); the MetFrag voter (C01) tied it at 0.472.**
+
 ![Pipeline](figures/pipeline_flow.gif)
 
 | | |
@@ -71,12 +73,11 @@ and successful export-roundtrip checks are recorded in the results JSON.
 **Official-state update, 28 October:** the authenticated Kaggle API now reports
 C00 submission **57729674 as COMPLETE, public score 0.472**. This verifies our
 reproduction of the credited public control, improving the account's earlier
-best 0.348 by **+0.124**. It is not evidence of a MetFrag improvement: C01's
-notebook completed, but a scored C01 competition receipt has not yet been
-verified. [Checked receipt](experiments/official-state-20261028.json).
+best 0.348 by **+0.124**. It is not evidence of a MetFrag improvement: C01, below,
+scored the same 0.472. [Checked receipt](experiments/official-state-20261028.json).
 No duplicate C00 submission was made by this update.
 
-<p align="center"><img src="docs/readme/03-c01-runtime.gif" alt="Six cards: notebook versions 4, 5, 6 and 7, the integrity gate and the pending submission" width="100%"><br><sub>Fig. 3 — C01 runtime and integrity history. Data: experiments/c01-*.json. Visible smoke runs, not a hidden-test score.</sub></p>
+<p align="center"><img src="docs/readme/03-c01-runtime.gif" alt="Six cards: notebook versions 4, 5, 6 and 7, the integrity gate and the scored submission" width="100%"><br><sub>Fig. 3 — C01 runtime and integrity history. Data: experiments/c01-*.json. Visible smoke runs, not a hidden-test score.</sub></p>
 
 **C01 runtime history:** version 4's completed Kaggle output scored **zero molecules**:
 its GPU image used Java 17, while the jar's main class requires Java 21
@@ -114,13 +115,15 @@ all 400 leaders and all 400 candidate sets against the saved control.
 [Checked result](experiments/c01-version7-integrity.json).
 
 **Official C01 submission 57753743 was sent on 29 October, 00:47 UTC**, using
-notebook version 7 and `submission.csv`. An independent API readback reports
-**PENDING, no public score yet**; C00 remains COMPLETE at 0.472.
+notebook version 7 and `submission.csv`. The authenticated Kaggle API reported it on
+6 November as **COMPLETE, public score 0.472**, the same as C00 at the three decimals
+the leaderboard shows. [Official state](experiments/official-state-20261106.json).
 [Submission receipt](experiments/c01-official-submission-20261029.json).
 This is the single exploratory official probe fixed by the E01 rule and
 reviewed with JEV before sending. Weight 0.25 and the six-spectrum rule are
-unchanged. Visible smoke results establish runtime and integrity, not a
-hidden-test gain; the actual competition rerun determines that score.
+unchanged. Visible smoke results established runtime and integrity; the
+competition rerun shows no change in the public score, and the private score arrives
+after 14 December.
 
 ## Highlights
 
@@ -219,12 +222,12 @@ can move at all. On the hidden natural-product test the control's MRR is ~0.47, 
 
 ### Kaggle submissions (cycle 2, 28 Oct 2026)
 
-<p align="center"><img src="docs/readme/06-submissions.gif" alt="Three tiles: C00 control public score 0.472, C01 pending, earlier best 0.348" width="100%"><br><sub>Fig. 6 — Kaggle submission state as read back from the API, 29 Oct 00:47 UTC. Data: experiments/official-state-20261028.json and c01-official-submission-20261029.json.</sub></p>
+<p align="center"><img src="docs/readme/06-submissions.gif" alt="Three tiles: C00 control public score 0.472, C01 public score 0.472, earlier best 0.348" width="100%"><br><sub>Fig. 6 — Kaggle submission state as read back from the API on 6 November. Data: experiments/official-state-20261106.json and c01-official-submission-20261029.json.</sub></p>
 
 | ID | Description | Public LB | Private LB |
 |---|---|---|---|
 | C00 / 57729674 | Control: credited public 0.472 recipe, unchanged | **API COMPLETE: 0.472** | after 14 Dec |
-| C01 | Control + MetFrag voter (w = 0.25) | receipt/score not independently verified | after 14 Dec |
+| C01 / 57753743 | Control + MetFrag voter (w = 0.25) | **API COMPLETE: 0.472** | after 14 Dec |
 
 The full experiment log, including negative results, is in [experiments/LOG.md](experiments/LOG.md) and
 [experiments/experiments.csv](experiments/experiments.csv).
@@ -337,16 +340,15 @@ shown outside the competition setting:
 
 ## Future work
 
-<p align="center"><img src="docs/readme/12-roadmap.gif" alt="Roadmap with three completed milestones, one in progress, one proposed step and one awaited result" width="100%"><br><sub>Fig. 12 — Completed milestones are documented in this repository; the rest are proposals, not commitments.</sub></p>
+<p align="center"><img src="docs/readme/12-roadmap.gif" alt="Roadmap with four completed milestones, one proposed step and one awaited result" width="100%"><br><sub>Fig. 12 — Completed milestones are documented in this repository; the rest are proposals, not commitments.</sub></p>
 
 Proposed next steps (not commitments):
 
-1. Read the public score of the pending C01 submission when the competition reports it, and record it next to the
-   unchanged C00 control without comparing it to the offline panel numbers.
-2. Build the hidden-like replay panel and repeat E01 on it under the same pre-registered rule.
-3. Any further board submission would need a new pre-registered rule, because E01 allows one exploratory submission
+1. Build the hidden-like replay panel and repeat E01 on it under the same pre-registered rule, to learn why the voter
+   left the public score unchanged.
+2. Any further board submission would need a new pre-registered rule, because E01 allows one exploratory submission
    (C01).
-4. After the private leaderboard is published (after 14 Dec), add the final result with its limitations.
+3. After the private leaderboard is published (after 14 Dec), add the final result with its limitations.
 
 ## License
 

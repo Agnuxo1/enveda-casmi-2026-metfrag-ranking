@@ -1,0 +1,22 @@
+{
+  "checked_utc": "2026-11-06T17:59:39.717843+00:00",
+  "competition": "enveda-CASMI26-molecule-id-mass-spectra",
+  "submissions": [
+    {
+      "ref": "57753743",
+      "label": "C01 control + MetFrag voter, w = 0.25",
+      "status": "SubmissionStatus.COMPLETE",
+      "public_score": "0.472",
+      "private_score": "",
+      "date": "2026-10-29 00:47:36.040000"
+    },
+    {
+      "ref": "57729674",
+      "label": "C00 credited public control",
+      "status": "SubmissionStatus.COMPLETE",
+      "public_score": "0.472",
+      "private_score": "",
+      "date": "2026-10-28 07:49:22.250000"
+    }
+  ]
+}
