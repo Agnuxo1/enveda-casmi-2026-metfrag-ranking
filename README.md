@@ -21,6 +21,10 @@ Our entry to the [Enveda CASMI 2026 Kaggle competition](https://www.kaggle.com/c
 
 **Contents** — [28 October: experimental weighting models and checked submission state](#28-october-experimental-weighting-models-and-checked-submission-state) · [Highlights](#highlights) · [Background](#background) · [How it works](#how-it-works) · [Results](#results) · [Reproduce](#reproduce) · [Repository layout](#repository-layout) · [Credits](#credits) · [Limitations and notes](#limitations-and-notes) · [Real-world applications](#real-world-applications) · [Possible improvements](#possible-improvements) · [Future work](#future-work) · [License](#license) · [Bibliography](#bibliography)
 
+<!-- impact-note:start -->
+<sub><strong>Efficiency and practical value.</strong> Adding MetFrag fragmentation evidence to the credited public ranking pipeline gives analysts an inspectable reason to reorder lower-ranked molecular candidates while preserving the leading answer and candidate set. The <a href="#how-it-works">bounded reranking stage</a> supports more informed follow-up selection without rebuilding the upstream pipeline. Positive offline-panel evidence remains limited; reduced laboratory work or better hidden-test identification must be demonstrated separately.</sub>
+<!-- impact-note:end -->
+
 ## 28 October: experimental weighting models and checked submission state
 
 The repository now includes a reusable [CPU trainer](src/experimental_weighting.py)
